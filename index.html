@@ -54,9 +54,7 @@
     .dropdown {
       position: relative;
     }
-    select,
-    input,
-    textarea {
+    select, input, textarea {
       width: 100%;
       padding: 10px;
       border: 2px solid #444;
@@ -68,9 +66,7 @@
       appearance: none;
       transition: border-color 0.3s;
     }
-    select:focus,
-    input:focus,
-    textarea:focus {
+    select:focus, input:focus, textarea:focus {
       border-color: #8a2be2;
       outline: none;
     }
@@ -86,6 +82,15 @@
     textarea {
       resize: vertical;
       min-height: 80px;
+    }
+    .desc {
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.4;
+      text-align: left;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      padding: 0 5px;
     }
     .btn {
       position: relative;
@@ -118,7 +123,8 @@
       background: rgba(255, 255, 255, 0.1);
     }
     .btn:hover::before {
-      box-shadow: 0 0 10px rgba(138, 43, 226, 0.7), 0 0 20px rgba(255, 0, 255, 0.7);
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.7),
+                  0 0 20px rgba(255, 0, 255, 0.7);
     }
   </style>
 </head>
@@ -140,23 +146,14 @@
         <option value="" disabled selected>Select activity...</option>
       </select>
     </div>
+    <!-- Micro-description will appear here -->
+    <p id="desc" class="desc"></p>
 
     <label for="participants">Number of participants</label>
-    <input
-      type="number"
-      id="participants"
-      min="1"
-      placeholder="e.g. 2"
-      required
-    />
+    <input type="number" id="participants" min="1" placeholder="e.g. 2" required />
 
     <label for="phone">Phone number</label>
-    <input
-      type="tel"
-      id="phone"
-      placeholder="e.g. +34620123456"
-      required
-    />
+    <input type="tel" id="phone" placeholder="e.g. +34620123456" required />
 
     <label for="notes">Additional notes</label>
     <textarea id="notes" placeholder="Any special requests…"></textarea>
@@ -168,26 +165,39 @@
     (function () {
       const activitiesMap = {
         day: [
-          'Oceans Beach Club Tickets',
-          'Jetski Rental',
-          'Boat Party',
-          'Boat Rentals',
-          'Quad Rental'
+          { name: 'Oceans Beach Club Tickets', desc: 'Reserve your daybed, cocktails & pool access at the exclusive Oceans Beach Club.' },
+          { name: 'Jetski Rental', desc: 'Experience the thrill of speeding over crystal-clear waters on a jetski.' },
+          { name: 'Boat Party', desc: 'Join a vibrant boat party with DJ, drinks & swim stops around Magaluf coast.' },
+          { name: 'Boat Rentals', desc: 'Rent your private boat and explore hidden coves at your own pace.' },
+          { name: 'Quad Rental', desc: 'Drive a quad across rugged trails for an adventurous off-road experience.' }
         ],
-        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+        night: [
+          { name: 'Pirates Adventure', desc: 'Enjoy a theatrical pirate show with acrobatics, dinner & live music.' },
+          { name: "Gringo's Bingo", desc: 'Participate in a fun-filled bingo night with crazy prizes & party vibes.' },
+          { name: 'MCP Pass', desc: 'Get multi-club access with one pass to the best nightspots in Magaluf.' }
+        ]
       };
 
       const timeSelect = document.getElementById('time');
       const activitySelect = document.getElementById('activity');
+      const descEl = document.getElementById('desc');
       const form = document.getElementById('bookingForm');
 
       timeSelect.addEventListener('change', () => {
+        descEl.textContent = '';
         const list = activitiesMap[timeSelect.value] || [];
         activitySelect.innerHTML =
           '<option value="" disabled selected>Select activity...</option>' +
-          list
-            .map((act) => `<option value="${act}">${act}</option>`)
-            .join('');
+          list.map(item =>
+            `<option value="${item.name}">${item.name}</option>`
+          ).join('');
+      });
+
+      activitySelect.addEventListener('change', () => {
+        const chosen = activitiesMap[timeSelect.value].find(
+          item => item.name === activitySelect.value
+        );
+        descEl.textContent = chosen ? chosen.desc : '';
       });
 
       form.addEventListener('submit', (e) => {
@@ -197,10 +207,11 @@
         const participants = document.getElementById('participants').value;
         const phone = document.getElementById('phone').value;
         const notes = document.getElementById('notes').value;
-        const message = `Hi Pepe! I'd like to book *${activity}* (${timeText}) for *${participants}* participants. Phone: ${phone}. Notes: ${notes}`;
-        window.location.href = `https://wa.me/34620618465?text=${encodeURIComponent(
-          message
-        )}`;
+        const message =
+          `Hi Pepe! I'd like to book *${activity}* (${timeText}) for ` +
+          `*${participants}* participants. Phone: ${phone}. Notes: ${notes}`;
+        window.location.href =
+          `https://wa.me/34620618465?text=${encodeURIComponent(message)}`;
       });
     })();
   </script>
