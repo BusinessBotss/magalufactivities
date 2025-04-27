@@ -18,15 +18,20 @@
     }
     .container {
       width: 100%;
-      max-width: 320px;
+      max-width: 350px;
       background: #ffffff;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       border-radius: 20px;
       padding: 30px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     h1 {
       font-size: 1.6rem;
@@ -49,27 +54,28 @@
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #fafafa;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #333;
-      transition: border 0.3s;
+      transition: border 0.3s, background 0.3s;
     }
     select:focus, input:focus, textarea:focus {
       border: 1px solid #000;
+      background: #fff;
       outline: none;
     }
     textarea {
       resize: vertical;
-      min-height: 70px;
+      min-height: 80px;
     }
     .btn {
       margin-top: 10px;
-      padding: 12px;
+      padding: 14px;
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
@@ -77,6 +83,27 @@
     }
     .btn:hover {
       background: #333;
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 15px;
+        border-radius: 16px;
+        max-width: 90%;
+      }
+      h1 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+      }
+      select, input, textarea {
+        font-size: 0.95rem;
+        padding: 9px 10px;
+      }
+      .btn {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
     }
   </style>
 </head>
