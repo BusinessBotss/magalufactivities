@@ -2,170 +2,256 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pepe's Site – Magaluf Booking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magaluf Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins :wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    * { margin:0; padding:0; box-sizing:border-box }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background:#000; color:#fff;
-      font-family:'Poppins',sans-serif;
-      display:flex; flex-direction:column;
-      align-items:center; min-height:100vh;
-      padding:20px; text-align:center;
+      background: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
     }
-    h1 { font-size:2rem; font-weight:700; margin-bottom:30px; }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
     .lang-buttons {
-      display: flex; gap: 10px; margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
+
     .lang-buttons button {
-      background: #222; color: #fff;
+      background: #222;
+      color: #fff;
       border: 1px solid #555;
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
     }
+
     form {
-      width:100%; max-width:400px;
-      display:flex; flex-direction:column; gap:20px;
-      opacity:0; transform:translateY(20px);
-      animation:fadeInUp 0.6s ease-out forwards;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease-out forwards;
     }
+
     @keyframes fadeInUp {
-      to { opacity:1; transform:translateY(0); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    label { font-size:1rem; text-align:left; }
-    .dropdown { position:relative; }
-    select,input,textarea {
-      width:100%; padding:10px;
-      border:2px solid #444; border-radius:8px;
-      background:rgba(255,255,255,0.05);
-      color:#fff; font-size:1rem;
-      appearance:none; transition:border-color .3s;
+
+    label {
+      font-size: 1rem;
+      text-align: left;
     }
-    select:focus,input:focus,textarea:focus {
-      border-color:#8a2be2; outline:none;
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 1rem;
+      appearance: none;
+      transition: border-color 0.3s;
     }
-    .dropdown::after {
-      content:'▼'; position:absolute;
-      right:12px; top:50%; transform:translateY(-50%);
-      pointer-events:none; color:#888;
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: #8a2be2;
+      outline: none;
     }
-    textarea { resize:vertical; min-height:80px; }
+
+    select::after {
+      content: '▼';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #888;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
     .btn {
-      position:relative; padding:15px 20px;
-      font-size:1.1rem; font-weight:700;
-      color:#fff; text-decoration:none;
-      border:2px solid; border-radius:16px;
-      background:transparent; cursor:pointer;
-      transition:color .3s;
+      padding: 15px 20px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      border: 2px solid;
+      border-radius: 16px;
+      background: transparent;
+      cursor: pointer;
+      transition: color 0.3s;
     }
+
     .btn::before {
-      content:''; position:absolute;
-      top:-2px; left:-2px; right:-2px; bottom:-2px;
-      border-radius:16px;
-      background:linear-gradient(45deg,#8a2be2,#ff00ff);
-      z-index:-1; transition:box-shadow .3s;
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 16px;
+      background: linear-gradient(45deg, #8a2be2, #ff00ff);
+      z-index: -1;
+      transition: box-shadow 0.3s;
     }
+
     .btn:hover {
-      color:#000; background:rgba(255,255,255,0.1);
+      color: #000;
+      background: rgba(255, 255, 255, 0.1);
     }
+
     .btn:hover::before {
-      box-shadow:0 0 10px rgba(138,43,226,.7),
-                 0 0 20px rgba(255,0,255,.7);
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.7),
+                  0 0 20px rgba(255, 0, 255, 0.7);
+    }
+
+    @media (max-width: 500px) {
+      form {
+        padding: 0 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1 id="formTitle">Book Your Magaluf Activity</h1>
+
+  <h1 id="title">Loading...</h1>
+
   <div class="lang-buttons">
-    <button onclick="switchLang('en')">EN</button>
-    <button onclick="switchLang('es')">ES</button>
-    <button onclick="switchLang('fr')">FR</button>
-    <button onclick="switchLang('de')">DE</button>
-    <button onclick="switchLang('it')">IT</button>
+    <button onclick="changeLanguage('en')">English</button>
+    <button onclick="changeLanguage('es')">Español</button>
+    <button onclick="changeLanguage('de')">Deutsch</button>
+    <button onclick="changeLanguage('fr')">Français</button>
+    <button onclick="changeLanguage('it')">Italiano</button>
   </div>
 
   <form id="bookingForm">
-    <label id="labelTime" for="time">Time Category</label>
-    <div class="dropdown">
-      <select id="time" required>
-        <option value="" disabled selected>Select time...</option>
-        <option value="day" id="optionDay">Day Activities</option>
-        <option value="night" id="optionNight">Night Activities</option>
-      </select>
-    </div>
+    <label for="name" name="name">Name</label>
+    <input type="text" id="name" name="name" required />
 
-    <label id="labelActivity" for="activity">Activity</label>
-    <div class="dropdown">
-      <select id="activity" required>
-        <option value="" disabled selected>Select activity...</option>
-      </select>
-    </div>
+    <label for="email" name="email">Email</label>
+    <input type="email" id="email" name="email" required />
 
-    <label id="labelParticipants" for="participants">Number of participants</label>
-    <input type="number" id="participants" min="1" placeholder="e.g. 2" required />
+    <label for="time" name="time">Time</label>
+    <select id="time" name="time" required>
+      <option value="">Select Time</option>
+      <option value="day">Day</option>
+      <option value="night">Night</option>
+    </select>
 
-    <label id="labelPhone" for="phone">Phone number</label>
-    <input type="tel" id="phone" placeholder="e.g. +34620123456" required />
+    <label for="message" name="message">Message</label>
+    <textarea id="message" name="message"></textarea>
 
-    <label id="labelNotes" for="notes">Additional notes</label>
-    <textarea id="notes" placeholder="Any special requests…"></textarea>
-
-    <button type="submit" class="btn" id="submitBtn">Send via WhatsApp</button>
+    <button type="submit" class="btn" id="submitBtn">Book Now</button>
   </form>
 
   <script>
-    const translations = {
+    const langContent = {
       en: {
-        formTitle: "Book Your Magaluf Activity",
-        time: "Time Category",
-        day: "Day Activities",
-        night: "Night Activities",
-        activity: "Activity",
-        selectActivity: "Select activity...",
-        participants: "Number of participants",
-        phone: "Phone number",
-        notes: "Additional notes",
-        send: "Send via WhatsApp",
-        activities: {
-          day: ["Oceans Beach Club Tickets", "Jetski Rental", "Boat Party", "Boat Rentals", "Quad Rental"],
-          night: ["Pirates Adventure", "Gringo's Bingo", "MCP Pass"]
-        }
+        title: "Magaluf Booking",
+        name: "Name",
+        email: "Email",
+        time: "Time",
+        message: "Message",
+        submit: "Book Now"
       },
       es: {
-        formTitle: "Reserva tu Actividad en Magaluf",
-        time: "Categoría de tiempo",
-        day: "Actividades de día",
-        night: "Actividades de noche",
-        activity: "Actividad",
-        selectActivity: "Selecciona una actividad...",
-        participants: "Número de participantes",
-        phone: "Teléfono",
-        notes: "Notas adicionales",
-        send: "Enviar por WhatsApp",
-        activities: {
-          day: ["Entradas Oceans Beach Club", "Alquiler de Jetski", "Fiesta en Barco", "Alquiler de Barco", "Alquiler de Quad"],
-          night: ["Pirates Adventure", "Gringo's Bingo", "Pase MCP"]
-        }
-      },
-      fr: {
-        formTitle: "Réservez votre activité à Magaluf",
-        time: "Catégorie horaire",
-        day: "Activités de jour",
-        night: "Activités de nuit",
-        activity: "Activité",
-        selectActivity: "Sélectionnez une activité...",
-        participants: "Nombre de participants",
-        phone: "Numéro de téléphone",
-        notes: "Notes supplémentaires",
-        send: "Envoyer via WhatsApp",
-        activities: {
-          day: ["Billet Oceans Beach Club", "Location de Jetski", "Soirée bateau", "Location de bateau", "Location de quad"],
-          night: ["Pirates Adventure", "Gringo's Bingo", "Pass MCP"]
-        }
+        title: "Reserva en Magaluf",
+        name: "Nombre",
+        email: "Correo electrónico",
+        time: "Horario",
+        message: "Mensaje",
+        submit: "Reservar ahora"
       },
       de: {
-        formTitle: "Buche deine Magaluf-Aktivität",
-        time: "
+        title: "Buchen in Magaluf",
+        name: "Name",
+        email: "E-Mail",
+        time: "Zeit",
+        message: "Nachricht",
+        submit: "Jetzt buchen"
+      },
+      fr: {
+        title: "Réservation à Magaluf",
+        name: "Nom",
+        email: "Adresse e-mail",
+        time: "Heure",
+        message: "Message",
+        submit: "Réserver maintenant"
+      },
+      it: {
+        title: "Prenota a Magaluf",
+        name: "Nome",
+        email: "Email",
+        time: "Orario",
+        message: "Messaggio",
+        submit: "Prenota ora"
+      }
+    };
+
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      updateTexts(lang);
+    }
+
+    function updateTexts(lang) {
+      document.getElementById("title").textContent = langContent[lang].title;
+
+      document.querySelector("label[name='name']").textContent = langContent[lang].name;
+      document.querySelector("label[name='email']").textContent = langContent[lang].email;
+      document.querySelector("label[name='time']").textContent = langContent[lang].time;
+      document.querySelector("label[name='message']").textContent = langContent[lang].message;
+      document.getElementById("submitBtn").textContent = langContent[lang].submit;
+    }
+
+    window.onload = () => {
+      const defaultLang = navigator.language.split('-')[0] || 'en';
+      if (defaultLang in langContent) {
+        changeLanguage(defaultLang);
+      } else {
+        changeLanguage('en');
+      }
+    };
+
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert(langContent[document.documentElement.lang].submit + "! Thank you for your booking.");
+      this.reset();
+    });
+  </script>
+</body>
+</html>
