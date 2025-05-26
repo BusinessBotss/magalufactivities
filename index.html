@@ -90,7 +90,11 @@
       outline: none;
     }
 
-    select::after {
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown::after {
       content: '▼';
       position: absolute;
       right: 12px;
@@ -98,10 +102,6 @@
       transform: translateY(-50%);
       pointer-events: none;
       color: #888;
-    }
-
-    .dropdown {
-      position: relative;
     }
 
     .btn {
