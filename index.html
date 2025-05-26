@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva Actividades Magaluf</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <title>Magaluf Activities Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins :wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -94,120 +94,112 @@
     .btn:hover {
       box-shadow: 0 0 10px rgba(255,0,255,.5), 0 0 20px rgba(138,43,226,.5);
     }
+    .summary {
+      background: #111;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    .summary ul {
+      list-style: none;
+      padding: 0;
+    }
+    .summary li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ff4d4d;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
     <div class="lang-switcher">
-      <button class="lang-btn active" onclick="switchLang('es')">ES</button>
-      <button class="lang-btn" onclick="switchLang('en')">EN</button>
+      <button class="lang-btn active" onclick="switchLang('en')">EN</button>
+      <button class="lang-btn" onclick="switchLang('es')">ES</button>
       <button class="lang-btn" onclick="switchLang('de')">DE</button>
       <button class="lang-btn" onclick="switchLang('fr')">FR</button>
       <button class="lang-btn" onclick="switchLang('it')">IT</button>
     </div>
-    <h1 id="formTitle">Reserva Actividades Magaluf</h1>
+    <h1 id="formTitle">Magaluf Activities Booking</h1>
     <form id="bookingForm">
-      <label for="time" id="labelTime">Categoría de Tiempo</label>
-      <select id="time" required>
-        <option value="" disabled selected>Selecciona...</option>
-        <option value="day">Actividades de Día</option>
-        <option value="night">Actividades de Noche</option>
+      <label for="time" id="labelTime">Time Category</label>
+      <select id="time">
+        <option value="" disabled selected>Select...</option>
+        <option value="day" id="optionDay">Day Activities</option>
+        <option value="night" id="optionNight">Night Activities</option>
       </select>
 
-      <label for="activity" id="labelActivity">Actividad</label>
-      <select id="activity" required>
-        <option value="" disabled selected>Selecciona una actividad...</option>
+      <label for="activity" id="labelActivity">Activity</label>
+      <select id="activity">
+        <option value="" disabled selected>Select an activity...</option>
       </select>
 
-      <label for="participants" id="labelParticipants">Número de Participantes</label>
-      <input type="number" id="participants" min="1" placeholder="Ej: 2" required>
+      <div class="summary" id="summary">
+        <strong id="summaryTitle">Summary:</strong>
+        <ul id="summaryList"></ul>
+      </div>
 
-      <label for="phone" id="labelPhone">Teléfono</label>
-      <input type="tel" id="phone" placeholder="Ej: +34620123456" required>
+      <label for="participants" id="labelParticipants">Number of Participants</label>
+      <input type="number" id="participants" min="1" placeholder="e.g. 2">
 
-      <label for="notes" id="labelNotes">Notas Adicionales</label>
-      <textarea id="notes" placeholder="¿Alguna petición especial?"></textarea>
+      <label for="phone" id="labelPhone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="e.g. +34620123456">
 
-      <button type="submit" class="btn" id="submitBtn">Reservar por WhatsApp</button>
+      <label for="notes" id="labelNotes">Additional Notes</label>
+      <textarea id="notes" placeholder="Any special requests?"></textarea>
+
+      <button type="submit" class="btn" id="submitBtn">Send via WhatsApp</button>
     </form>
   </div>
 
   <script>
-    const activityOptions = {
-      es: {
-        day: ['Oceans Beach Club', 'Alquiler de Jetski', 'Boat Party', 'Alquiler de Barco', 'Rutas en Quad'],
-        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
-      },
+    const translations = {
       en: {
         day: ['Oceans Beach Club', 'Jetski Rental', 'Boat Party', 'Boat Rentals', 'Quad Tours'],
         night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
       },
+      es: {
+        day: ['Oceans Beach Club', 'Alquiler de Jetski', 'Fiesta en Barco', 'Alquiler de Barcos', 'Rutas en Quad'],
+        night: ['Pirates Adventure', "Bingo de Gringo", 'MCP Pass']
+      },
       de: {
-        day: ['Oceans Beach Club', 'Jetski Verleih', 'Bootsparty', 'Bootsverleih', 'Quad Touren'],
-        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+        day: ['Oceans Beach Club', 'Jetski Verleih', 'Bootsparty', 'Bootsvermietung', 'Quad Touren'],
+        night: ['Pirates Adventure', "Gringos Bingo", 'MCP Pass']
       },
       fr: {
-        day: ['Oceans Beach Club', 'Location de Jet Ski', 'Fête en Bateau', 'Location de Bateau', 'Tours en Quad'],
-        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+        day: ['Oceans Beach Club', 'Location de Jet Ski', 'Fête en bateau', 'Location de bateau', 'Randonnée en quad'],
+        night: ['Pirates Adventure', "Bingo de Gringo", 'Pass MCP']
       },
       it: {
-        day: ['Oceans Beach Club', 'Noleggio Jetski', 'Festa in Barca', 'Noleggio Barca', 'Tour in Quad'],
-        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+        day: ['Oceans Beach Club', 'Noleggio Jetski', 'Festa in Barca', 'Noleggio Barche', 'Tour in Quad'],
+        night: ['Pirates Adventure', "Bingo di Gringo", 'MCP Pass']
       }
     };
 
-    const translations = {
-      es: { title: "Reserva Actividades Magaluf", time: "Categoría de Tiempo", activity: "Actividad", participants: "Número de Participantes", phone: "Teléfono", notes: "Notas Adicionales", submit: "Reservar por WhatsApp", placeholderTime: "Selecciona...", placeholderActivity: "Selecciona una actividad...", placeholderPeople: "Ej: 2", placeholderPhone: "Ej: +34620123456", placeholderNotes: "¿Alguna petición especial?" },
-      en: { title: "Book Activities in Magaluf", time: "Time Category", activity: "Activity", participants: "Number of Participants", phone: "Phone Number", notes: "Additional Notes", submit: "Book via WhatsApp", placeholderTime: "Select...", placeholderActivity: "Select an activity...", placeholderPeople: "e.g. 2", placeholderPhone: "e.g. +34620123456", placeholderNotes: "Any special requests?" },
-      de: { title: "Aktivitäten in Magaluf buchen", time: "Zeitkategorie", activity: "Aktivität", participants: "Anzahl der Teilnehmer", phone: "Telefonnummer", notes: "Zusätzliche Hinweise", submit: "Über WhatsApp buchen", placeholderTime: "Wählen...", placeholderActivity: "Aktivität auswählen...", placeholderPeople: "z.B. 2", placeholderPhone: "z.B. +34620123456", placeholderNotes: "Besondere Wünsche?" },
-      fr: { title: "Réserver Activités Magaluf", time: "Catégorie de Temps", activity: "Activité", participants: "Nombre de Participants", phone: "Numéro de Téléphone", notes: "Remarques Supplémentaires", submit: "Réserver via WhatsApp", placeholderTime: "Choisir...", placeholderActivity: "Choisissez une activité...", placeholderPeople: "ex: 2", placeholderPhone: "ex: +34620123456", placeholderNotes: "Des demandes particulières ?" },
-      it: { title: "Prenota Attività a Magaluf", time: "Categoria di Tempo", activity: "Attività", participants: "Numero di Partecipanti", phone: "Numero di Telefono", notes: "Note Aggiuntive", submit: "Prenota via WhatsApp", placeholderTime: "Seleziona...", placeholderActivity: "Seleziona un'attività...", placeholderPeople: "Es: 2", placeholderPhone: "Es: +34620123456", placeholderNotes: "Richieste speciali?" }
-    };
-
-    let currentLang = 'es';
-
-    function switchLang(lang) {
-      currentLang = lang;
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`[onclick="switchLang('${lang}')"]`).classList.add('active');
-
-      const t = translations[lang];
-      document.getElementById('formTitle').textContent = t.title;
-      document.getElementById('labelTime').textContent = t.time;
-      document.getElementById('labelActivity').textContent = t.activity;
-      document.getElementById('labelParticipants').textContent = t.participants;
-      document.getElementById('labelPhone').textContent = t.phone;
-      document.getElementById('labelNotes').textContent = t.notes;
-      document.getElementById('submitBtn').textContent = t.submit;
-      document.getElementById('time').options[0].text = t.placeholderTime;
-      document.getElementById('activity').options[0].text = t.placeholderActivity;
-      document.getElementById('participants').placeholder = t.placeholderPeople;
-      document.getElementById('phone').placeholder = t.placeholderPhone;
-      document.getElementById('notes').placeholder = t.placeholderNotes;
-    }
-
-    document.getElementById('time').addEventListener('change', () => {
-      const value = document.getElementById('time').value;
-      const activitySelect = document.getElementById('activity');
-      const list = activityOptions[currentLang][value] || [];
-      activitySelect.innerHTML = `<option value="" disabled selected>${translations[currentLang].placeholderActivity}</option>` +
-        list.map(act => `<option value="${act}">${act}</option>`).join('');
-    });
-
-    document.getElementById('bookingForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const timeText = document.getElementById('time').options[document.getElementById('time').selectedIndex].text;
-      const activity = document.getElementById('activity').value;
-      const participants = document.getElementById('participants').value;
-      const phone = document.getElementById('phone').value;
-      const notes = document.getElementById('notes').value;
-
-      const message = `Hola Pepe! Quiero reservar *${activity}* (${timeText}) para *${participants}* personas. Teléfono: ${phone}. Notas: ${notes}`;
-
-      window.open(`https://wa.me/34620618465?text=${encodeURIComponent(message)}`, '_blank');
-    });
-
-    switchLang('es');
-  </script>
-</body>
-</html>
+    const translationsText = {
+      en: {
+        formTitle: "Magaluf Activities Booking",
+        labelTime: "Time Category",
+        optionDay: "Day Activities",
+        optionNight: "Night Activities",
+        selectActivity: "Select an activity...",
+        labelParticipants: "Number of Participants",
+        participantsPlaceholder: "e.g. 2",
+        labelPhone: "Phone Number",
+        phonePlaceholder: "e.g. +34620123456",
+        labelNotes: "Additional Notes",
+        notesPlaceholder: "Any special requests?",
+        submitBtn: "Send via WhatsApp",
+        summaryTitle: "Summary"
+      },
+      es: {
