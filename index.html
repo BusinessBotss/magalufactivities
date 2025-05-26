@@ -1,68 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pepe's Site – Magaluf Booking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Actividades Magaluf</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
       font-family: 'Poppins', sans-serif;
-      background: #f5f5f5;
+      background-color: #000;
+      color: #fff;
+      line-height: 1.6;
+      padding: 40px 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-start;
+      min-height: 100vh;
     }
-    .container {
-      width: 100%;
-      max-width: 350px;
-      background: #ffffff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    .form-container {
+      background-color: #1a1a1a;
       border-radius: 20px;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      animation: fadeUp 0.8s ease forwards;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+      padding: 30px;
+      width: 100%;
+      max-width: 450px;
+      animation: fadeIn 0.8s ease;
     }
-    @keyframes fadeUp {
+    @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
     h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #000;
+      font-size: 1.8rem;
+      text-align: center;
       margin-bottom: 25px;
     }
-    form {
-      width: 100%;
+    .lang-switcher {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .lang-btn {
+      background: none;
+      border: 1px solid #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background: #fff;
+      color: #000;
     }
     label {
-      text-align: left;
-      font-size: 0.9rem;
-      color: #555;
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
     }
     select, input, textarea {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 2px solid #444;
       border-radius: 10px;
-      background: #fafafa;
+      background-color: #111;
+      color: #fff;
       font-size: 1rem;
-      color: #333;
-      transition: border 0.3s, background 0.3s;
+      appearance: none;
     }
     select:focus, input:focus, textarea:focus {
-      border: 1px solid #000;
-      background: #fff;
+      border-color: #ff00ff;
       outline: none;
     }
     textarea {
@@ -70,112 +80,134 @@
       min-height: 80px;
     }
     .btn {
-      margin-top: 10px;
+      width: 100%;
       padding: 14px;
-      background: #000;
-      color: #fff;
+      background: linear-gradient(45deg, #8a2be2, #ff00ff);
       border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 1rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: box-shadow 0.3s ease;
     }
     .btn:hover {
-      background: #333;
-    }
-
-    /* Responsive improvements */
-    @media (max-width: 480px) {
-      .container {
-        padding: 25px 15px;
-        border-radius: 16px;
-        max-width: 90%;
-      }
-      h1 {
-        font-size: 1.4rem;
-        margin-bottom: 20px;
-      }
-      select, input, textarea {
-        font-size: 0.95rem;
-        padding: 9px 10px;
-      }
-      .btn {
-        font-size: 0.95rem;
-        padding: 12px;
-      }
+      box-shadow: 0 0 10px rgba(255,0,255,.5), 0 0 20px rgba(138,43,226,.5);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Book Your<br>Magaluf Activity</h1>
+  <div class="form-container">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="switchLang('es')">ES</button>
+      <button class="lang-btn" onclick="switchLang('en')">EN</button>
+      <button class="lang-btn" onclick="switchLang('de')">DE</button>
+      <button class="lang-btn" onclick="switchLang('fr')">FR</button>
+      <button class="lang-btn" onclick="switchLang('it')">IT</button>
+    </div>
+    <h1 id="formTitle">Reserva Actividades Magaluf</h1>
     <form id="bookingForm">
-      <label for="time">Time Category</label>
+      <label for="time" id="labelTime">Categoría de Tiempo</label>
       <select id="time" required>
-        <option value="" disabled selected>Select time...</option>
-        <option value="day">Day Activities</option>
-        <option value="night">Night Activities</option>
+        <option value="" disabled selected>Selecciona...</option>
+        <option value="day">Actividades de Día</option>
+        <option value="night">Actividades de Noche</option>
       </select>
 
-      <label for="activity">Activity</label>
+      <label for="activity" id="labelActivity">Actividad</label>
       <select id="activity" required>
-        <option value="" disabled selected>Select activity...</option>
+        <option value="" disabled selected>Selecciona una actividad...</option>
       </select>
 
-      <label for="participants">Number of Participants</label>
-      <input type="number" id="participants" min="1" placeholder="e.g. 2" required>
+      <label for="participants" id="labelParticipants">Número de Participantes</label>
+      <input type="number" id="participants" min="1" placeholder="Ej: 2" required>
 
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" placeholder="e.g. +34620123456" required>
+      <label for="phone" id="labelPhone">Teléfono</label>
+      <input type="tel" id="phone" placeholder="Ej: +34620123456" required>
 
-      <label for="notes">Additional Notes</label>
-      <textarea id="notes" placeholder="Any special requests..."></textarea>
+      <label for="notes" id="labelNotes">Notas Adicionales</label>
+      <textarea id="notes" placeholder="¿Alguna petición especial?"></textarea>
 
-      <button type="submit" class="btn">Send via WhatsApp</button>
+      <button type="submit" class="btn" id="submitBtn">Reservar por WhatsApp</button>
     </form>
   </div>
 
   <script>
-    (function() {
-      const activitiesMap = {
-        day: [
-          'Oceans Beach Club Tickets',
-          'Jetski Rental',
-          'Boat Party',
-          'Boat Rentals',
-          'Quad Rental'
-        ],
-        night: [
-          'Pirates Adventure',
-          "Gringo's Bingo",
-          'MCP Pass'
-        ]
-      };
+    const activityOptions = {
+      es: {
+        day: ['Oceans Beach Club', 'Alquiler de Jetski', 'Boat Party', 'Alquiler de Barco', 'Rutas en Quad'],
+        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+      },
+      en: {
+        day: ['Oceans Beach Club', 'Jetski Rental', 'Boat Party', 'Boat Rentals', 'Quad Tours'],
+        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+      },
+      de: {
+        day: ['Oceans Beach Club', 'Jetski Verleih', 'Bootsparty', 'Bootsverleih', 'Quad Touren'],
+        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+      },
+      fr: {
+        day: ['Oceans Beach Club', 'Location de Jet Ski', 'Fête en Bateau', 'Location de Bateau', 'Tours en Quad'],
+        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+      },
+      it: {
+        day: ['Oceans Beach Club', 'Noleggio Jetski', 'Festa in Barca', 'Noleggio Barca', 'Tour in Quad'],
+        night: ['Pirates Adventure', "Gringo's Bingo", 'MCP Pass']
+      }
+    };
 
-      const timeSelect = document.getElementById('time');
+    const translations = {
+      es: { title: "Reserva Actividades Magaluf", time: "Categoría de Tiempo", activity: "Actividad", participants: "Número de Participantes", phone: "Teléfono", notes: "Notas Adicionales", submit: "Reservar por WhatsApp", placeholderTime: "Selecciona...", placeholderActivity: "Selecciona una actividad...", placeholderPeople: "Ej: 2", placeholderPhone: "Ej: +34620123456", placeholderNotes: "¿Alguna petición especial?" },
+      en: { title: "Book Activities in Magaluf", time: "Time Category", activity: "Activity", participants: "Number of Participants", phone: "Phone Number", notes: "Additional Notes", submit: "Book via WhatsApp", placeholderTime: "Select...", placeholderActivity: "Select an activity...", placeholderPeople: "e.g. 2", placeholderPhone: "e.g. +34620123456", placeholderNotes: "Any special requests?" },
+      de: { title: "Aktivitäten in Magaluf buchen", time: "Zeitkategorie", activity: "Aktivität", participants: "Anzahl der Teilnehmer", phone: "Telefonnummer", notes: "Zusätzliche Hinweise", submit: "Über WhatsApp buchen", placeholderTime: "Wählen...", placeholderActivity: "Aktivität auswählen...", placeholderPeople: "z.B. 2", placeholderPhone: "z.B. +34620123456", placeholderNotes: "Besondere Wünsche?" },
+      fr: { title: "Réserver Activités Magaluf", time: "Catégorie de Temps", activity: "Activité", participants: "Nombre de Participants", phone: "Numéro de Téléphone", notes: "Remarques Supplémentaires", submit: "Réserver via WhatsApp", placeholderTime: "Choisir...", placeholderActivity: "Choisissez une activité...", placeholderPeople: "ex: 2", placeholderPhone: "ex: +34620123456", placeholderNotes: "Des demandes particulières ?" },
+      it: { title: "Prenota Attività a Magaluf", time: "Categoria di Tempo", activity: "Attività", participants: "Numero di Partecipanti", phone: "Numero di Telefono", notes: "Note Aggiuntive", submit: "Prenota via WhatsApp", placeholderTime: "Seleziona...", placeholderActivity: "Seleziona un'attività...", placeholderPeople: "Es: 2", placeholderPhone: "Es: +34620123456", placeholderNotes: "Richieste speciali?" }
+    };
+
+    let currentLang = 'es';
+
+    function switchLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[onclick="switchLang('${lang}')"]`).classList.add('active');
+
+      const t = translations[lang];
+      document.getElementById('formTitle').textContent = t.title;
+      document.getElementById('labelTime').textContent = t.time;
+      document.getElementById('labelActivity').textContent = t.activity;
+      document.getElementById('labelParticipants').textContent = t.participants;
+      document.getElementById('labelPhone').textContent = t.phone;
+      document.getElementById('labelNotes').textContent = t.notes;
+      document.getElementById('submitBtn').textContent = t.submit;
+      document.getElementById('time').options[0].text = t.placeholderTime;
+      document.getElementById('activity').options[0].text = t.placeholderActivity;
+      document.getElementById('participants').placeholder = t.placeholderPeople;
+      document.getElementById('phone').placeholder = t.placeholderPhone;
+      document.getElementById('notes').placeholder = t.placeholderNotes;
+    }
+
+    document.getElementById('time').addEventListener('change', () => {
+      const value = document.getElementById('time').value;
       const activitySelect = document.getElementById('activity');
-      const form = document.getElementById('bookingForm');
+      const list = activityOptions[currentLang][value] || [];
+      activitySelect.innerHTML = `<option value="" disabled selected>${translations[currentLang].placeholderActivity}</option>` +
+        list.map(act => `<option value="${act}">${act}</option>`).join('');
+    });
 
-      timeSelect.addEventListener('change', () => {
-        const list = activitiesMap[timeSelect.value] || [];
-        activitySelect.innerHTML = '<option value="" disabled selected>Select activity...</option>' +
-          list.map(act => `<option value="${act}">${act}</option>`).join('');
-      });
+    document.getElementById('bookingForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const timeText = document.getElementById('time').options[document.getElementById('time').selectedIndex].text;
+      const activity = document.getElementById('activity').value;
+      const participants = document.getElementById('participants').value;
+      const phone = document.getElementById('phone').value;
+      const notes = document.getElementById('notes').value;
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const timeText = timeSelect.options[timeSelect.selectedIndex].text;
-        const activity = activitySelect.value;
-        const participants = document.getElementById('participants').value;
-        const phone = document.getElementById('phone').value;
-        const notes = document.getElementById('notes').value;
+      const message = `Hola Pepe! Quiero reservar *${activity}* (${timeText}) para *${participants}* personas. Teléfono: ${phone}. Notas: ${notes}`;
 
-        const message = `Hi Pepe! I'd like to book *${activity}* (${timeText}) for *${participants}* participants. Phone: ${phone}. Notes: ${notes}`;
+      window.open(`https://wa.me/34620618465?text=${encodeURIComponent(message)}`, '_blank');
+    });
 
-        window.location.href = `https://wa.me/34620618465?text=${encodeURIComponent(message)}`;
-      });
-    })();
+    switchLang('es');
   </script>
 </body>
 </html>
