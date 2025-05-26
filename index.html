@@ -75,6 +75,19 @@
       box-shadow:0 0 10px rgba(138,43,226,.7),
                  0 0 20px rgba(255,0,255,.7);
     }
+    .info-box {
+      max-width: 600px;
+      margin: 20px auto;
+      font-size: 1rem;
+      opacity: 0.85;
+      text-align: left;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+    a { color: #ff00ff; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -82,7 +95,15 @@
   <div class="lang-buttons">
     <button onclick="switchLang('en')">EN</button>
     <button onclick="switchLang('es')">ES</button>
+    <button onclick="switchLang('fr')">FR</button>
+    <button onclick="switchLang('de')">DE</button>
+    <button onclick="switchLang('it')">IT</button>
   </div>
+
+  <div class="info-box" id="introText">
+    Welcome to Pepe's Official Booking Site. Here you can reserve your favorite Magaluf experiences — whether you're seeking adventure during the day or parties at night.
+  </div>
+
   <form id="bookingForm">
     <label id="labelTime" for="time">Time Category</label>
     <div class="dropdown">
@@ -112,10 +133,18 @@
     <button type="submit" class="btn" id="submitBtn">Send via WhatsApp</button>
   </form>
 
+  <div class="footer" id="footerContact">
+    Need help? <a href="https://wa.me/34620618465" target="_blank">Contact Pepe on WhatsApp →</a>
+  </div>
+  <div class="footer" id="footerNote">
+    Bookings are not final until confirmed via WhatsApp.
+  </div>
+
   <script>
     const translations = {
       en: {
         formTitle: "Book Your Magaluf Activity",
+        intro: "Welcome to Pepe's Official Booking Site. Here you can reserve your favorite Magaluf experiences — whether you're seeking adventure during the day or parties at night.",
         time: "Time Category",
         day: "Day Activities",
         night: "Night Activities",
@@ -125,23 +154,16 @@
         phone: "Phone number",
         notes: "Additional notes",
         send: "Send via WhatsApp",
+        contact: "Need help? Contact Pepe on WhatsApp →",
+        disclaimer: "Bookings are not final until confirmed via WhatsApp.",
         activities: {
-          day: [
-            'Oceans Beach Club Tickets',
-            'Jetski Rental',
-            'Boat Party',
-            'Boat Rentals',
-            'Quad Rental'
-          ],
-          night: [
-            'Pirates Adventure',
-            "Gringo's Bingo",
-            'MCP Pass'
-          ]
+          day: ["Oceans Beach Club Tickets", "Jetski Rental", "Boat Party", "Boat Rentals", "Quad Rental"],
+          night: ["Pirates Adventure", "Gringo's Bingo", "MCP Pass"]
         }
       },
       es: {
         formTitle: "Reserva tu Actividad en Magaluf",
+        intro: "Bienvenido al sitio oficial de reservas de Pepe. Aquí puedes reservar tus experiencias favoritas en Magaluf, ya sea que busques aventura de día o fiesta de noche.",
         time: "Categoría de tiempo",
         day: "Actividades de día",
         night: "Actividades de noche",
@@ -151,27 +173,38 @@
         phone: "Teléfono",
         notes: "Notas adicionales",
         send: "Enviar por WhatsApp",
+        contact: "¿Necesitas ayuda? Contacta con Pepe por WhatsApp →",
+        disclaimer: "La reserva no está confirmada hasta recibir mensaje por WhatsApp.",
         activities: {
-          day: [
-            'Entradas Oceans Beach Club',
-            'Alquiler de Jetski',
-            'Fiesta en Barco',
-            'Alquiler de Barco',
-            'Alquiler de Quad'
-          ],
-          night: [
-            'Pirates Adventure',
-            "Gringo's Bingo",
-            'Pase MCP'
-          ]
+          day: ["Entradas Oceans Beach Club", "Alquiler de Jetski", "Fiesta en Barco", "Alquiler de Barco", "Alquiler de Quad"],
+          night: ["Pirates Adventure", "Gringo's Bingo", "Pase MCP"]
+        }
+      },
+      fr: {
+        formTitle: "Réservez votre activité à Magaluf",
+        intro: "Bienvenue sur le site officiel de réservation de Pepe. Réservez vos activités préférées à Magaluf — aventures de jour ou soirées animées.",
+        time: "Catégorie horaire",
+        day: "Activités de jour",
+        night: "Activités de nuit",
+        activity: "Activité",
+        selectActivity: "Sélectionnez une activité...",
+        participants: "Nombre de participants",
+        phone: "Numéro de téléphone",
+        notes: "Notes supplémentaires",
+        send: "Envoyer via WhatsApp",
+        contact: "Besoin d'aide ? Contacte Pepe sur WhatsApp →",
+        disclaimer: "La réservation est confirmée uniquement après réponse sur WhatsApp.",
+        activities: {
+          day: ["Billet Oceans Beach Club", "Location de Jetski", "Boat Party", "Location de bateau", "Location de quad"],
+          night: ["Pirates Adventure", "Gringo's Bingo", "Pass MCP"]
         }
       }
     };
 
     function switchLang(lang) {
       const t = translations[lang] || translations.en;
-
       document.getElementById('formTitle').textContent = t.formTitle;
+      document.getElementById('introText').textContent = t.intro;
       document.getElementById('labelTime').textContent = t.time;
       document.getElementById('optionDay').textContent = t.day;
       document.getElementById('optionNight').textContent = t.night;
@@ -180,19 +213,20 @@
       document.getElementById('labelPhone').textContent = t.phone;
       document.getElementById('labelNotes').textContent = t.notes;
       document.getElementById('submitBtn').textContent = t.send;
+      document.getElementById('footerContact').innerHTML = t.contact.replace("Pepe", '<a href="https://wa.me/34620618465" target="_blank">Pepe</a>');
+      document.getElementById('footerNote').textContent = t.disclaimer;
 
       const timeSelect = document.getElementById('time');
       const activitySelect = document.getElementById('activity');
-
       timeSelect.onchange = () => {
-        const timeValue = timeSelect.value;
-        const options = t.activities[timeValue] || [];
+        const selected = timeSelect.value;
+        const list = t.activities[selected] || [];
         activitySelect.innerHTML = '<option value="" disabled selected>' + t.selectActivity + '</option>';
-        options.forEach(opt => {
-          const el = document.createElement('option');
-          el.textContent = opt;
-          el.value = opt;
-          activitySelect.appendChild(el);
+        list.forEach(act => {
+          const option = document.createElement('option');
+          option.textContent = act;
+          option.value = act;
+          activitySelect.appendChild(option);
         });
       };
     }
