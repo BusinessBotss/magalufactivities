@@ -9,18 +9,43 @@
   <style>
     /* Reset & base */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Poppins', sans-serif; background: #000; color: #fff; }
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(45deg,#ff00cc,#333,#00ccff,#333);
+      background-size: 300% 300%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+    }
     a { color: #fff; text-decoration: none; }
     button, input, select, textarea { font-family: inherit; }
 
     /* Layout */
     .container {
-      width: 90%; max-width: 400px; margin: 2rem auto;
-      display: flex; flex-direction: column; align-items: stretch;
+      width: 90%;
+      max-width: 400px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 1.5rem;
       animation: fadeInUp 0.6s ease-out;
+      transition: transform 0.2s;
     }
+    .container:hover { transform: scale(1.02); }
     nav { margin-bottom: 1rem; text-align: center; }
-    .lang-btn { background: transparent; border: none; color: #fff; margin: 0 4px; font-weight: 600; cursor: pointer; }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      margin: 0 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .lang-btn:hover { transform: translateY(-2px); }
     .lang-btn.active { text-decoration: underline; }
 
     /* Labels */
@@ -29,31 +54,69 @@
 
     /* Form fields */
     select, input, textarea {
-      width: 100%; background: rgba(255,255,255,0.1);
+      width: 100%;
+      background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.3);
       border-radius: 8px;
       padding: 0.75rem;
       color: #fff;
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #ff00cc;
+      box-shadow: 0 0 8px #ff00cc;
     }
     textarea { resize: vertical; min-height: 80px; }
 
     /* Button */
     .btn {
-      border: none; border-radius: 25px; padding: 0.75rem;
-      background: transparent; color: #fff; font-weight: 600;
-      cursor: pointer; transition: box-shadow 0.3s ease;
+      border: none;
+      border-radius: 25px;
+      padding: 0.75rem;
+      background: linear-gradient(45deg,#ff00cc,#a100ff);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease, transform 0.3s;
     }
-    .btn:hover { box-shadow: 0 0 8px #ff00cc, 0 0 16px #a100ff; }
+    .btn:hover {
+      box-shadow: 0 0 8px #ff00cc, 0 0 16px #a100ff;
+      transform: translateY(-2px);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    .toast.show { opacity: 1; }
 
     /* Footer */
     footer { margin-top: 2rem; text-align: center; font-size: 0.9rem; opacity: 0.8; }
     footer a { font-weight: 600; }
 
     /* Animations */
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
   </style>
 </head>
 <body>
+  <div id="toast" class="toast"></div>
   <div class="container">
     <nav id="lang-switch"></nav>
     <p class="intro" id="intro-text"></p>
@@ -93,35 +156,50 @@
         labels: { time: "Time of Day", activity: "Select Activity", participants: "Number of Participants", phone: "Phone Number", notes: "Additional Notes (optional)" },
         placeholders: { time: "-- Choose Time --", activity: "-- Choose Activity --" },
         activities: { day: ["Oceans Beach Club Tickets","Jetski Rental","Boat Party","Boat Rentals","Quad Rental"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-        submit: "Book via WhatsApp", help: "Need help? Chat with Pepe →", disclaimer: "Reservations pending until confirmed via WhatsApp."
+        submit: "Book via WhatsApp",
+        help: "Need help? Chat with Pepe →",
+        disclaimer: "Reservations pending until confirmed via WhatsApp.",
+        opening: "Opening WhatsApp..."
       },
       ES: {
         intro: "Reserva tus actividades favoritas en Magaluf de forma rápida y sencilla.",
         labels: { time: "Momento del Día", activity: "Selecciona Actividad", participants: "Número de Participantes", phone: "Número de Teléfono", notes: "Notas Adicionales (opcional)" },
         placeholders: { time: "-- Elige Momento --", activity: "-- Elige Actividad --" },
         activities: { day: ["Entradas Oceans Beach Club","Alquiler de Jetski","Fiesta en Barco","Alquiler de Barco","Alquiler de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","MCP Pass"] },
-        submit: "Reservar por WhatsApp", help: "¿Necesitas ayuda? Habla con Pepe →", disclaimer: "Reservas pendientes hasta confirmación por WhatsApp."
+        submit: "Reservar por WhatsApp",
+        help: "¿Necesitas ayuda? Habla con Pepe →",
+        disclaimer: "Reservas pendientes hasta confirmación por WhatsApp.",
+        opening: "Abriendo WhatsApp..."
       },
       FR: {
         intro: "Réservez vos activités préférées à Magaluf en toute simplicité.",
         labels: { time: "Moment de la Journée", activity: "Choisir une Activité", participants: "Nombre de Participants", phone: "Numéro de Téléphone", notes: "Notes Supplémentaires (facultatif)" },
         placeholders: { time: "-- Choisir Moment --", activity: "-- Choisir Activité --" },
         activities: { day: ["Billets Oceans Beach Club","Location de Jetski","Fête en Bateau","Location de Bateau","Location de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","Pass MCP"] },
-        submit: "Réserver via WhatsApp", help: "Besoin d'aide ? Parlez à Pepe →", disclaimer: "Réservations en attente jusqu'à confirmation via WhatsApp."
+        submit: "Réserver via WhatsApp",
+        help: "Besoin d'aide ? Parlez à Pepe →",
+        disclaimer: "Réservations en attente jusqu'à confirmation via WhatsApp.",
+        opening: "Ouverture de WhatsApp..."
       },
       DE: {
         intro: "Buche deine Lieblingsaktivitäten in Magaluf ganz einfach.",
         labels: { time: "Tageszeit", activity: "Aktivität wählen", participants: "Teilnehmerzahl", phone: "Telefonnummer", notes: "Zusätzliche Notizen (optional)" },
         placeholders: { time: "-- Wähle Zeit --", activity: "-- Wähle Aktivität --" },
         activities: { day: ["Oceans Beach Club Tickets","Jetski Verleih","Bootsparty","Bootsverleih","Quad Verleih"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-        submit: "Per WhatsApp buchen", help: "Brauchen Sie Hilfe? Sprechen Sie mit Pepe →", disclaimer: "Reservierungen ausstehend bis Bestätigung via WhatsApp."
+        submit: "Per WhatsApp buchen",
+        help: "Brauchen Sie Hilfe? Sprechen Sie mit Pepe →",
+        disclaimer: "Reservierungen ausstehend bis Bestätigung via WhatsApp.",
+        opening: "WhatsApp wird geöffnet..."
       },
       IT: {
         intro: "Prenota le tue attività preferite a Magaluf in modo semplice.",
         labels: { time: "Momento del Giorno", activity: "Seleziona Attività", participants: "Numero di Partecipanti", phone: "Numero di Telefono", notes: "Note Aggiuntive (opzionale)" },
         placeholders: { time: "-- Scegli Momento --", activity: "-- Scegli Attività --" },
         activities: { day: ["Biglietti Oceans Beach Club","Noleggio Jetski","Festa in Barca","Noleggio Barca","Noleggio Quad"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-        submit: "Prenota via WhatsApp", help: "Hai bisogno di aiuto? Parla con Pepe →", disclaimer: "Prenotazioni in attesa fino a conferma via WhatsApp."
+        submit: "Prenota via WhatsApp",
+        help: "Hai bisogno di aiuto? Parla con Pepe →",
+        disclaimer: "Prenotazioni in attesa fino a conferma via WhatsApp.",
+        opening: "Apertura di WhatsApp..."
       }
     };
     const whatsappNumber = "34620618465";
@@ -191,14 +269,28 @@
       });
     }
 
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
       timeCategory.onchange = updateActivities;
+      document.addEventListener('mousemove', e => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 4;
+        const y = (e.clientY / window.innerHeight - 0.5) * -4;
+        document.querySelector('.container').style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+      });
     });
 
     document.getElementById('booking-form').onsubmit = e => {
       e.preventDefault();
+      const t = translations[currentLang];
       const msg = `Hi Pepe! I'd like to book *${activity.value}* (${timeCategory.options[timeCategory.selectedIndex].text}) for *${participants.value}* participants. Phone: ${phone.value}. Notes: ${notes.value||'-'}.`;
+      showToast(t.opening);
       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank');
     };
   </script>
