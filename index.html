@@ -1,266 +1,232 @@
-```jsx
-import { useState, useEffect, useRef } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magaluf Bookings</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Variables temáticos */
+    :root[data-theme='dark'] { --bg: #000; --text: #fff; --field-bg: rgba(255,255,255,0.1); --border: rgba(255,255,255,0.3); }
+    :root[data-theme='light'] { --bg: #fff; --text: #000; --field-bg: rgba(0,0,0,0.05); --border: rgba(0,0,0,0.2); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); }
+    a { color: var(--text); text-decoration: none; }
+    button, input, select, textarea { font-family: inherit; }
 
-export default function App() {
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'EN');
-  const [lightMode, setLightMode] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const formRef = useRef(null);
+    /* Layout */
+    .container { width: 90%; max-width: 400px; margin: 2rem auto; display: flex; flex-direction: column; align-items: stretch; animation: fadeInUp 0.6s ease-out; }
+    nav { margin-bottom: 1rem; text-align: center; }
+    .lang-btn, #theme-toggle { background: transparent; border: none; color: var(--text); margin: 0 4px; font-weight: 600; cursor: pointer; }
+    .lang-btn.active { text-decoration: underline; }
 
-  const translations = {
-    EN: {
-      intro: "Book your favorite activities in Magaluf hassle-free.",
-      labels: { time: "Time of Day", activity: "Select Activity", participants: "Number of Participants", phone: "Phone Number", notes: "Additional Notes (optional)" },
-      placeholders: { time: "-- Choose Time --", activity: "-- Choose Activity --" },
-      activities: { day: ["Oceans Beach Club Tickets","Jetski Rental","Boat Party","Boat Rentals","Quad Rental"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-      submit: "Book via WhatsApp", help: "Need help? Chat with Pepe →", disclaimer: "Reservations pending until confirmed via WhatsApp."
-    },
-    ES: {
-      intro: "Reserva tus actividades favoritas en Magaluf de forma rápida y sencilla.",
-      labels: { time: "Momento del Día", activity: "Selecciona Actividad", participants: "Número de Participantes", phone: "Número de Teléfono", notes: "Notas Adicionales (opcional)" },
-      placeholders: { time: "-- Elige Momento --", activity: "-- Elige Actividad --" },
-      activities: { day: ["Entradas Oceans Beach Club","Alquiler de Jetski","Fiesta en Barco","Alquiler de Barco","Alquiler de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","MCP Pass"] },
-      submit: "Reservar por WhatsApp", help: "¿Necesitas ayuda? Habla con Pepe →", disclaimer: "Reservas pendientes hasta confirmación por WhatsApp."
-    },
-    FR: {
-      intro: "Réservez vos activités préférées à Magaluf en toute simplicité.",
-      labels: { time: "Moment de la Journée", activity: "Choisir une Activité", participants: "Nombre de Participants", phone: "Numéro de Téléphone", notes: "Notes Supplémentaires (facultatif)" },
-      placeholders: { time: "-- Choisir Moment --", activity: "-- Choisir Activité --" },
-      activities: { day: ["Billets Oceans Beach Club","Location de Jetski","Fête en Bateau","Location de Bateau","Location de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","Pass MCP"] },
-      submit: "Réserver via WhatsApp", help: "Besoin d'aide ? Parlez à Pepe →", disclaimer: "Réservations en attente jusqu'à confirmation via WhatsApp."
-    },
-    DE: {
-      intro: "Buche deine Lieblingsaktivitäten in Magaluf ganz einfach.",
-      labels: { time: "Tageszeit", activity: "Aktivität wählen", participants: "Teilnehmerzahl", phone: "Telefonnummer", notes: "Zusätzliche Notizen (optional)" },
-      placeholders: { time: "-- Wähle Zeit --", activity: "-- Wähle Aktivität --" },
-      activities: { day: ["Oceans Beach Club Tickets","Jetski Verleih","Bootsparty","Bootsverleih","Quad Verleih"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-      submit: "Per WhatsApp buchen", help: "Brauchen Sie Hilfe? Sprechen Sie mit Pepe →", disclaimer: "Reservierungen ausstehend bis Bestätigung via WhatsApp."
-    },
-    IT: {
-      intro: "Prenota le tue attività preferite a Magaluf in modo semplice.",
-      labels: { time: "Momento del Giorno", activity: "Seleziona Attività", participants: "Numero di Partecipanti", phone: "Numero di Telefono", notes: "Note Aggiuntive (opzionale)" },
-      placeholders: { time: "-- Scegli Momento --", activity: "-- Scegli Attività --" },
-      activities: { day: ["Biglietti Oceans Beach Club","Noleggio Jetski","Festa in Barca","Noleggio Barca","Noleggio Quad"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] },
-      submit: "Prenota via WhatsApp", help: "Hai bisogno di aiuto? Parla con Pepe →", disclaimer: "Prenotazioni in attesa fino a conferma via WhatsApp."
-    }
-  };
+    /* Form */
+    form[role='form'] { display: flex; flex-direction: column; }
+    label { display: block; margin-bottom: 0.25rem; font-weight: 600; opacity: 0.9; }
+    .field { margin-bottom: 1rem; position: relative; }
+    select, input, textarea { width: 100%; background: var(--field-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--text); }
+    textarea { resize: vertical; min-height: 80px; }
+    .tooltip { position: absolute; top: 100%; left: 0; font-size: 0.8rem; opacity: 0.7; margin-top: 0.25rem; }
 
-  const whatsappNumber = "+34644075065";
+    /* Spinner */
+    .spinner { width: 24px; height: 24px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; right: 8px; top: 36px; }
+    .hidden { display: none; }
 
-  useEffect(() => {
-    document.documentElement.setAttribute('lang', lang);
-    updateUI();
-  }, [lang]);
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-  useEffect(() => {
-    const savedParticipants = localStorage.getItem('participants');
-    const savedPhone = localStorage.getItem('phone');
-    if (savedParticipants) formRef.current?.participants.value = savedParticipants;
-    if (savedPhone) formRef.current?.phone.value = savedPhone;
-  }, []);
+    /* Button */
+    .btn { border: none; border-radius: 25px; padding: 0.75rem; background: transparent; color: var(--text); font-weight: 600; cursor: pointer; transition: box-shadow 0.3s ease; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn:hover:not(:disabled) { box-shadow: 0 0 8px #ff00cc, 0 0 16px #a100ff; }
 
-  const updateUI = () => {
-    const t = translations[lang];
-    document.querySelectorAll('.lang-btn').forEach(b => 
-      b.classList.toggle('active', b.textContent === lang)
-    );
-  };
+    /* Footer */
+    footer { margin-top: 2rem; text-align: center; font-size: 0.9rem; opacity: 0.8; }
+    footer a { font-weight: 600; }
 
-  const handleLanguageChange = (newLang) => {
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  };
+    /* Focus states */
+    input:focus, select:focus, button:focus { outline: 2px solid #ff00cc; }
 
-  const handleTimeChange = (e) => {
-    const selectedTime = e.target.value;
-    const activitySelect = formRef.current?.activity;
-    if (!selectedTime || !activitySelect) return;
+    /* Animations */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav id="lang-switch"></nav>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+    <p class="intro" id="intro-text"></p>
 
-    const t = translations[lang];
-    activitySelect.innerHTML = `<option value="" disabled selected>${t.placeholders.activity}</option>`;
-    
-    t.activities[selectedTime]?.forEach(activityName => {
-      const option = document.createElement('option');
-      option.value = activityName;
-      option.textContent = activityName;
-      activitySelect.appendChild(option);
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const activityValue = formData.get('activity');
-    const phoneValue = formData.get('phone');
-
-    if (!activityValue) {
-      alert("Por favor selecciona una actividad.");
-      return;
-    }
-
-    if (phoneValue.length < 9) {
-      alert("Por favor introduce un número válido.");
-      return;
-    }
-
-    setLoading(true);
-    const participantsValue = formData.get('participants');
-    const notesValue = formData.get('notes');
-
-    // Save to localStorage
-    localStorage.setItem('participants', participantsValue);
-    localStorage.setItem('phone', phoneValue);
-
-    const msg = `Hi! I'd like to book *${activityValue}* (${formRef.current.timeCategory.options[formRef.current.timeCategory.selectedIndex].text}) for *${participantsValue}* participants. Phone: ${phoneValue}. Notes: ${notesValue||'-'}.`;
-
-    setTimeout(() => {
-      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-      setLoading(false);
-    }, 1000);
-  };
-
-  const currentTranslation = translations[lang];
-
-  return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${lightMode ? 'bg-white text-black' : 'bg-black text-white'}`}>
-      {/* SEO & Social Sharing */}
-      <meta property="og:title" content="Magaluf Bookings" />
-      <meta property="og:description" content={currentTranslation.intro} />
-      <meta name="twitter:card" content="summary_large_image" />
-
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <nav className="flex justify-center space-x-2 mb-6">
-          {Object.keys(translations).map(code => (
-            <button
-              key={code}
-              className={`lang-btn px-3 py-1 rounded-full text-sm font-medium transition-all ${
-                lang === code 
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-pink-500/30' 
-                  : 'bg-opacity-20 hover:bg-opacity-30'
-              }`}
-              onClick={() => handleLanguageChange(code)}
-            >
-              {code}
-            </button>
-          ))}
-        </nav>
-
-        <p className="intro text-xl mb-8 text-center">{currentTranslation.intro}</p>
-
-        <form ref={formRef} id="booking-form" onSubmit={handleSubmit} className="space-y-6">
-          <div className="field">
-            <label htmlFor="time-category" className="block mb-2 font-semibold">
-              {currentTranslation.labels.time}
-            </label>
-            <select
-              id="time-category"
-              name="time-category"
-              onChange={handleTimeChange}
-              className="w-full bg-opacity-20 border border-opacity-30 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-              required
-            >
-              <option value="" disabled selected>
-                {currentTranslation.placeholders.time}
-              </option>
-              {Object.keys(currentTranslation.activities).map(key => (
-                <option key={key} value={key}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="field">
-            <label htmlFor="activity" className="block mb-2 font-semibold">
-              {currentTranslation.labels.activity}
-            </label>
-            <select
-              id="activity"
-              name="activity"
-              className="w-full bg-opacity-20 border border-opacity-30 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-              required
-            >
-              <option value="" disabled selected>
-                {currentTranslation.placeholders.activity}
-              </option>
-            </select>
-          </div>
-
-          <div className="field">
-            <label htmlFor="participants" className="block mb-2 font-semibold">
-              {currentTranslation.labels.participants}
-            </label>
-            <input
-              type="number"
-              id="participants"
-              name="participants"
-              min="1"
-              defaultValue="1"
-              required
-              className="w-full bg-opacity-20 border border-opacity-30 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-            />
-          </div>
-
-          <div className="field">
-            <label htmlFor="phone" className="block mb-2 font-semibold">
-              {currentTranslation.labels.phone}
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              placeholder="+34 600 000 000"
-              required
-              className="w-full bg-opacity-20 border border-opacity-30 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-            />
-          </div>
-
-          <div className="field">
-            <label htmlFor="notes" className="block mb-2 font-semibold">
-              {currentTranslation.labels.notes}
-            </label>
-            <textarea
-              id="notes"
-              name="notes"
-              rows="3"
-              className="w-full bg-opacity-20 border border-opacity-30 rounded-lg p-3 resize-y focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            className="btn w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl hover:shadow-pink-500/30 transform hover:-translate-y-0.5 transition-all duration-300"
-          >
-            {currentTranslation.submit}
-          </button>
-
-          {loading && (
-            <div id="loading" className="text-center mt-4 text-pink-500">
-              Loading...
-            </div>
-          )}
-        </form>
-
-        <footer className="mt-10 text-center">
-          <p className="help-text mb-2 opacity-80">
-            <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 transition-colors">
-              {currentTranslation.help}
-            </a>
-          </p>
-          <p className="disclaimer-text text-sm opacity-70">
-            {currentTranslation.disclaimer}
-          </p>
-          
-          <button
-            onClick={() => setLightMode(!lightMode)}
-            className="toggle-theme-btn mt-6 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
-          >
-            Toggle Theme
-          </button>
-        </footer>
+    <form id="booking-form" role="form" aria-labelledby="intro-text">
+      <div class="field">
+        <label for="time-category" id="label-time"></label>
+        <select id="time-category" required aria-required="true"></select>
+        <div id="spinner" class="spinner hidden" aria-hidden="true"></div>
       </div>
-    </div>
-  );
-}
-```
+      <div class="field">
+        <label for="activity" id="label-activity"></label>
+        <select id="activity" required aria-required="true"></select>
+      </div>
+      <div class="field">
+        <label for="participants" id="label-participants"></label>
+        <input type="number" id="participants" min="1" value="1" required aria-required="true" data-tooltip="Máx. 20 participantes" />
+        <span class="tooltip" id="tip-participants"></span>
+      </div>
+      <div class="field">
+        <label for="phone" id="label-phone"></label>
+        <input type="tel" id="phone" placeholder="+34 600 000 000" required aria-required="true" data-tooltip="Formato: +34 600000000" />
+        <span class="tooltip" id="tip-phone"></span>
+      </div>
+      <div class="field">
+        <label for="notes" id="label-notes"></label>
+        <textarea id="notes" aria-label="Additional notes"></textarea>
+      </div>
+
+      <button type="button" id="save-fav" class="btn" disabled></button>
+      <button type="submit" class="btn" id="submit-btn" disabled></button>
+      <p id="status-msg" aria-live="polite"></p>
+    </form>
+
+    <footer>
+      <p id="help-text"></p>
+      <p id="disclaimer-text"></p>
+    </footer>
+  </div>
+
+  <script>
+  (function() {
+    const translations = {
+      EN: { intro: "Book your favorite activities in Magaluf hassle-free.", labels: { time: "Time of Day", activity: "Select Activity", participants: "Number of Participants", phone: "Phone Number", notes: "Additional Notes (optional)" }, placeholders: { time: "-- Choose Time --", activity: "-- Choose Activity --" }, activities: { day: ["Oceans Beach Club Tickets","Jetski Rental","Boat Party","Boat Rentals","Quad Rental"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] }, submit: "Book via WhatsApp", saveFav: "Save Favorite", help: "Need help? Chat with us →", disclaimer: "Reservations pending until confirmed via WhatsApp." },
+      ES: { intro: "Reserva tus actividades favoritas en Magaluf de forma rápida y sencilla.", labels: { time: "Momento del Día", activity: "Selecciona Actividad", participants: "Número de Participantes", phone: "Número de Teléfono", notes: "Notas Adicionales (opcional)" }, placeholders: { time: "-- Elige Momento --", activity: "-- Elige Actividad --" }, activities: { day: ["Entradas Oceans Beach Club","Alquiler de Jetski","Fiesta en Barco","Alquiler de Barco","Alquiler de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","MCP Pass"] }, submit: "Reservar por WhatsApp", saveFav: "Guardar Favorito", help: "¿Necesitas ayuda? Habla con nosotros →", disclaimer: "Reservas pendientes hasta confirmación por WhatsApp." },
+      FR: { intro: "Réservez vos activités préférées à Magaluf en toute simplicité.", labels: { time: "Moment de la Journée", activity: "Choisir une Activité", participants: "Nombre de Participants", phone: "Numéro de Téléphone", notes: "Notes Supplémentaires (facultatif)" }, placeholders: { time: "-- Choisir Moment --", activity: "-- Choisir Activité --" }, activities: { day: ["Billets Oceans Beach Club","Location de Jetski","Fête en Bateau","Location de Bateau","Location de Quad"], night: ["Pirates Adventure","Bingo de Gringo's","Pass MCP"] }, submit: "Réserver via WhatsApp", saveFav: "Enregistrer Favori", help: "Besoin d'aide ? Parlez à nous →", disclaimer: "Réservations en attente jusqu'à confirmation via WhatsApp." },
+      DE: { intro: "Buche deine Lieblingsaktivitäten in Magaluf ganz einfach.", labels: { time: "Tageszeit", activity: "Aktivität wählen", participants: "Teilnehmerzahl", phone: "Telefonnummer", notes: "Zusätzliche Notizen (optional)" }, placeholders: { time: "-- Wähle Zeit --", activity: "-- Wähle Aktivität --" }, activities: { day: ["Oceans Beach Club Tickets","Jetski Verleih","Bootsparty","Bootsverleih","Quad Verleih"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] }, submit: "Per WhatsApp buchen", saveFav: "Favorit speichern", help: "Brauchen Sie Hilfe? Sprechen Sie mit uns →", disclaimer: "Reservierungen ausstehend bis Bestätigung via WhatsApp." },
+      IT: { intro: "Prenota le tue attività preferite a Magaluf in modo semplice.", labels: { time: "Momento del Giorno", activity: "Seleziona Attività", participants: "Numero di Partecipanti", phone: "Numero di Telefono", notes: "Note Aggiuntive (opzionale)" }, placeholders: { time: "-- Scegli Momento --", activity: "-- Scegli Attività --" }, activities: { day: ["Biglietti Oceans Beach Club","Noleggio Jetski","Festa in Barca","Noleggio Barca","Noleggio Quad"], night: ["Pirates Adventure","Gringo's Bingo","MCP Pass"] }, submit: "Prenota via WhatsApp", saveFav: "Salva Preferito", help: "Hai bisogno d'aiuto? Parla con noi →", disclaimer: "Prenotazioni in attesa fino a conferma via WhatsApp." }
+    };
+    const whatsappNumber = "+34644075065";
+
+    // DOM
+    const el = {
+      langSwitch: document.getElementById('lang-switch'),
+      themeToggle: document.getElementById('theme-toggle'),
+      intro: document.getElementById('intro-text'),
+      labels: {
+        time: document.getElementById('label-time'), activity: document.getElementById('label-activity'), participants: document.getElementById('label-participants'), phone: document.getElementById('label-phone'), notes: document.getElementById('label-notes')
+      },
+      selects: { time: document.getElementById('time-category'), activity: document.getElementById('activity') },
+      spinner: document.getElementById('spinner'),
+      participants: document.getElementById('participants'), tipParticipants: document.getElementById('tip-participants'),
+      phone: document.getElementById('phone'), tipPhone: document.getElementById('tip-phone'),
+      saveFav: document.getElementById('save-fav'), submitBtn: document.getElementById('submit-btn'), statusMsg: document.getElementById('status-msg'),
+      help: document.getElementById('help-text'), disclaimer: document.getElementById('disclaimer-text'), form: document.getElementById('booking-form')
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'EN';
+    let currentFav = JSON.parse(localStorage.getItem('fav') || 'null');
+
+    function init() {
+      renderLangButtons();
+      applyLanguage(currentLang);
+      applyTheme(localStorage.getItem('theme') || 'dark');
+      el.selects.time.addEventListener('change', renderActivities);
+      el.form.addEventListener('input', validateForm);
+      el.form.addEventListener('submit', onSubmit);
+      el.saveFav.addEventListener('click', saveFavorite);
+      el.participants.addEventListener('focus', () => el.tipParticipants.textContent = el.participants.dataset.tooltip);
+      el.participants.addEventListener('blur', () => el.tipParticipants.textContent = '');
+      el.phone.addEventListener('focus', () => el.tipPhone.textContent = el.phone.dataset.tooltip);
+      el.phone.addEventListener('blur', () => el.tipPhone.textContent = '');
+      el.phone.addEventListener('input', validatePhone);
+      el.themeToggle.addEventListener('click', toggleTheme);
+      if(currentFav) fillFavorite();
+    }
+
+    function renderLangButtons() {
+      Object.keys(translations).forEach(code => {
+        const btn = document.createElement('button'); btn.textContent = code; btn.className = 'lang-btn';
+        btn.addEventListener('click', () => setLanguage(code)); el.langSwitch.appendChild(btn);
+      });
+    }
+
+    function setLanguage(lang) { localStorage.setItem('lang', lang); applyLanguage(lang); }
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent===lang));
+      el.intro.textContent = t.intro;
+      el.labels.time.textContent = t.labels.time;
+      el.labels.activity.textContent = t.labels.activity;
+      el.labels.participants.textContent = t.labels.participants;
+      el.labels.phone.textContent = t.labels.phone;
+      el.landers;
+      el.labels.notes.textContent = t.labels.notes;
+      renderSelectOptions(el.selects.time, t.placeholders.time, Object.keys(t.activities));
+      renderActivities();
+      el.submitBtn.textContent = t.submit;
+      el.saveFav.textContent = t.saveFav;
+      el.help.innerHTML = `<a href="https://wa.me/${whatsappNumber}" target="_blank">${t.help}</a>`;
+      el.disclaimer.textContent = t.disclaimer;
+      validateForm();
+    }
+
+    function renderSelectOptions(selectEl, placeholder, options) {
+      selectEl.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+      options.forEach(opt => { const o = document.createElement('option'); o.value=opt; o.textContent = opt.charAt(0).toUpperCase()+opt.slice(1); selectEl.appendChild(o); });
+    }
+
+    function renderActivities() {
+      el.spinner.classList.remove('hidden');
+      setTimeout(() => {
+        const t = translations[currentLang];
+        const key = el.selects.time.value;
+        renderSelectOptions(el.selects.activity, t.placeholders.activity, t.activities[key]||[]);
+        el.spinner.classList.add('hidden');
+        validateForm();
+      }, 300);
+    }
+
+    function validatePhone() {
+      const valid = /^\\+34\\s?\\d{9}$/.test(el.phone.value);
+      el.phone.setCustomValidity(valid ? '' : 'Formato: +34 9 dígitos');
+    }
+
+    function validateForm() {
+      const valid = el.selects.time.value && el.selects.activity.value && el.participants.value && el.phone.checkValidity();
+      el.submitBtn.disabled = !valid;
+      el.saveFav.disabled = !valid;
+    }
+
+    function onSubmit(e) {
+      e.preventDefault();
+      el.statusMsg.textContent = translations[currentLang].submit === el.submitBtn.textContent ? 'Enviando reserva…' : 'Sending reservation…';
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+        `Hi! I'd like to book *${el.selects.activity.value}* (${el.selects.time.selectedOptions[0].text}) for *${el.participants.value}* participants. Phone: ${el.phone.value}. Notes: ${el.notes.value||'-'}.`)}
+      `, '_blank');
+      setTimeout(() => { el.statusMsg.textContent = 'Reserva enviada con éxito'; }, 500);
+    }
+
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; applyTheme(next);
+    }
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    function saveFavorite() {
+      const fav = { time: el.selects.time.value, activity: el.selects.activity.value, participants: el.participants.value };
+      localStorage.setItem('fav', JSON.stringify(fav)); el.statusMsg.textContent = 'Favorito guardado';
+    }
+
+    function fillFavorite() {
+      el.selects.time.value = currentFav.time; renderActivities();
+      setTimeout(() => {
+        el.selects.activity.value = currentFav.activity;
+        el.participants.value = currentFav.participants;
+        validateForm();
+      }, 350);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
+</body>
+</html>
