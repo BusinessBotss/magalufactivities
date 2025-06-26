@@ -1,56 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magaluf Bookings</title>
+
+  <!-- SEO & Social Sharing -->
+  <meta property="og:title" content="Magaluf Bookings" />
+  <meta property="og:description" content="Reserva tus actividades favoritas en Magaluf fácilmente." />
+  <meta property="og:image" content="https://example.com/preview.jpg " />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    /* Reset & base */
+    :root {
+      --primary-color: #ff00cc;
+      --secondary-color: #a100ff;
+      --bg-color: #000;
+      --text-color: #fff;
+      --input-bg: rgba(255,255,255,0.1);
+      --input-border: rgba(255,255,255,0.3);
+    }
+
+    body.light-mode {
+      --bg-color: #fff;
+      --text-color: #000;
+      --input-bg: rgba(0,0,0,0.1);
+      --input-border: rgba(0,0,0,0.3);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Poppins', sans-serif; background: #000; color: #fff; }
-    a { color: #fff; text-decoration: none; }
+    html, body { height: 100%; font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-color); }
+
+    a { color: var(--text-color); text-decoration: none; }
     button, input, select, textarea { font-family: inherit; }
 
-    /* Layout */
     .container {
-      width: 90%; max-width: 400px; margin: 2rem auto;
-      display: flex; flex-direction: column; align-items: stretch;
+      width: 90%;
+      max-width: 400px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
       animation: fadeInUp 0.6s ease-out;
     }
-    nav { margin-bottom: 1rem; text-align: center; }
-    .lang-btn { background: transparent; border: none; color: #fff; margin: 0 4px; font-weight: 600; cursor: pointer; }
-    .lang-btn.active { text-decoration: underline; }
 
-    /* Labels */
-    label { display: block; margin-bottom: 0.25rem; font-weight: 600; opacity: 0.9; }
-    .field { margin-bottom: 1rem; }
+    nav {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
 
-    /* Form fields */
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      margin: 0 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      text-decoration: underline;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
     select, input, textarea {
-      width: 100%; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
       padding: 0.75rem;
-      color: #fff;
+      color: var(--text-color);
     }
-    textarea { resize: vertical; min-height: 80px; }
 
-    /* Button */
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
     .btn {
-      border: none; border-radius: 25px; padding: 0.75rem;
-      background: transparent; color: #fff; font-weight: 600;
-      cursor: pointer; transition: box-shadow 0.3s ease;
+      border: none;
+      border-radius: 25px;
+      padding: 0.75rem;
+      background: transparent;
+      color: var(--text-color);
+      font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
     }
-    .btn:hover { box-shadow: 0 0 8px #ff00cc, 0 0 16px #a100ff; }
 
-    /* Footer */
-    footer { margin-top: 2rem; text-align: center; font-size: 0.9rem; opacity: 0.8; }
-    footer a { font-weight: 600; }
+    .btn:hover {
+      box-shadow: 0 0 8px #ff00cc, 0 0 16px #a100ff;
+    }
 
-    /* Animations */
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    footer a {
+      font-weight: 600;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      color: var(--primary-color);
+    }
+
+    .toggle-theme-btn {
+      margin-top: 1rem;
+      background: var(--primary-color);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -59,30 +146,32 @@
     <p class="intro" id="intro-text"></p>
     <form id="booking-form">
       <div class="field">
-        <label for="time-category" id="label-time"></label>
+        <label for="time-category" id="label-time" aria-label="Time of Day"></label>
         <select id="time-category"></select>
       </div>
       <div class="field">
-        <label for="activity" id="label-activity"></label>
+        <label for="activity" id="label-activity" aria-label="Select Activity"></label>
         <select id="activity"></select>
       </div>
       <div class="field">
-        <label for="participants" id="label-participants"></label>
+        <label for="participants" id="label-participants" aria-label="Number of Participants"></label>
         <input type="number" id="participants" min="1" value="1" required />
       </div>
       <div class="field">
-        <label for="phone" id="label-phone"></label>
+        <label for="phone" id="label-phone" aria-label="Phone Number"></label>
         <input type="tel" id="phone" placeholder="+34 600 000 000" required />
       </div>
       <div class="field">
-        <label for="notes" id="label-notes"></label>
+        <label for="notes" id="label-notes" aria-label="Additional Notes"></label>
         <textarea id="notes"></textarea>
       </div>
-      <button type="submit" class="btn" id="submit-btn"></button>
+      <button type="submit" class="btn" id="submit-btn">Book via WhatsApp</button>
+      <div id="loading">Cargando...</div>
     </form>
     <footer>
       <p id="help-text"></p>
       <p id="disclaimer-text"></p>
+      <button class="toggle-theme-btn" onclick="toggleTheme()">Toggle Theme</button>
     </footer>
   </div>
 
@@ -124,7 +213,8 @@
         submit: "Prenota via WhatsApp", help: "Hai bisogno di aiuto? Parla con Pepe →", disclaimer: "Prenotazioni in attesa fino a conferma via WhatsApp."
       }
     };
-    const whatsappNumber = "34620618465";
+
+    const whatsappNumber = "+34644075065";
 
     // Elements
     const langSwitch = document.getElementById('lang-switch');
@@ -142,13 +232,15 @@
     const labelParticipants = document.getElementById('label-participants');
     const labelPhone = document.getElementById('label-phone');
     const labelNotes = document.getElementById('label-notes');
+    const loading = document.getElementById('loading');
 
     let currentLang = localStorage.getItem('lang') || 'EN';
 
     // Init language buttons
     Object.keys(translations).forEach(code => {
       const btn = document.createElement('button');
-      btn.textContent = code; btn.className = 'lang-btn';
+      btn.textContent = code;
+      btn.className = 'lang-btn';
       btn.onclick = () => setLanguage(code);
       langSwitch.appendChild(btn);
     });
@@ -156,6 +248,7 @@
     function setLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('lang', lang);
+      document.documentElement.setAttribute('lang', lang);
       updateUI();
     }
 
@@ -168,6 +261,7 @@
       labelParticipants.textContent = t.labels.participants;
       labelPhone.textContent = t.labels.phone;
       labelNotes.textContent = t.labels.notes;
+
       timeCategory.innerHTML = `<option value="" disabled selected>${t.placeholders.time}</option>`;
       Object.keys(t.activities).forEach(key => {
         const opt = document.createElement('option');
@@ -177,7 +271,7 @@
       });
       updateActivities();
       submitBtn.textContent = t.submit;
-      helpText.innerHTML = `<a href="https://wa.me/${whatsappNumber}" target="_blank">${t.help}</a>`;
+      helpText.innerHTML = `<a href=" https://wa.me/ ${whatsappNumber}" target="_blank">${t.help}</a>`;
       disclaimerText.textContent = t.disclaimer;
     }
 
@@ -198,10 +292,45 @@
 
     document.getElementById('booking-form').onsubmit = e => {
       e.preventDefault();
-      const msg = `Hi Pepe! I'd like to book *${activity.value}* (${timeCategory.options[timeCategory.selectedIndex].text}) for *${participants.value}* participants. Phone: ${phone.value}. Notes: ${notes.value||'-'}.`;
-      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank');
+
+      if (!activity.value) {
+        alert("Por favor selecciona una actividad.");
+        return;
+      }
+
+      const phoneValue = phone.value.trim();
+      if (phoneValue.length < 9) {
+        alert("Por favor introduce un número válido.");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      loading.style.display = 'block';
+
+      const msg = `Hi! I'd like to book *${activity.value}* (${timeCategory.options[timeCategory.selectedIndex].text}) for *${participants.value}* participants. Phone: ${phone.value}. Notes: ${notes.value||'-'}.`;
+
+      setTimeout(() => {
+        window.open(`https://wa.me/ ${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank');
+        submitBtn.disabled = false;
+        loading.style.display = 'none';
+      }, 1000);
     };
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    // Cargar datos previos
+    window.addEventListener('load', () => {
+      participants.value = localStorage.getItem('participants') || 1;
+      phone.value = localStorage.getItem('phone') || '';
+    });
+
+    // Guardar datos al salir o enviar
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('participants', participants.value);
+      localStorage.setItem('phone', phone.value);
+    });
   </script>
 </body>
 </html>
-
