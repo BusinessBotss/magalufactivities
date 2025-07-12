@@ -132,4 +132,167 @@
             labels: { service: "Sélectionnez le Service", boatPrice: "Choisissez la Gamme de Prix", venue: "Choisissez la Boîte de Nuit", date: "Date Souhaitée", time: "Heure Souhaitée", participants: "Nombre de Personnes", phone: "Numéro de Téléphone", notes: "Notes Additionnelles" },
             placeholders: { service: "-- Choisissez un service --", boatPrice: "-- Choisissez une gamme de prix --", venue: "-- Choisissez une boîte de nuit --" },
             services: { "Jetski 1h": "Jetski 1h", "Boat Rental": "Location de Bateau", "VIP Table": "Table VIP" },
-            boatPrices: { range1: "400€ - 900€ (Bateaux demi-journée)", range2: "900€ - 1.800€ (Bateaux
+            boatPrices: { range1: "400€ - 900€ (Bateaux demi-journée)", range2: "900€ - 1.800€ (Bateaux journée complète)", range3: "1.800€ - 5.300€ (Yachts)" },
+            venues: { BCM: "BCM", Lio: "Lio Mallorca", Amok: "Amok" },
+            venueLinks: "Voir les clubs:",
+            submit: "Réserver via WhatsApp",
+            help: "Besoin d'aide? Discutez avec nous →",
+            disclaimer: "Les réservations sont en attente de confirmation via WhatsApp."
+        },
+        DE: {
+            intro: "Buchen Sie Ihr VIP-Erlebnis auf Mallorca.",
+            labels: { service: "Dienstleistung Wählen", boatPrice: "Preisspanne Wählen", venue: "Nachtclub Wählen", date: "Gewünschtes Datum", time: "Gewünschte Uhrzeit", participants: "Anzahl der Personen", phone: "Telefonnummer", notes: "Zusätzliche Anmerkungen" },
+            placeholders: { service: "-- Dienstleistung wählen --", boatPrice: "-- Preisspanne wählen --", venue: "-- Nachtclub wählen --" },
+            services: { "Jetski 1h": "Jetski 1h", "Boat Rental": "Bootsverleih", "VIP Table": "VIP-Tisch" },
+            boatPrices: { range1: "400€ - 900€ (Halbtagesboote)", range2: "900€ - 1.800€ (Ganztagesboote)", range3: "1.800€ - 5.300€ (Yachten)" },
+            venues: { BCM: "BCM", Lio: "Lio Mallorca", Amok: "Amok" },
+            venueLinks: "Clubs ansehen:",
+            submit: "Per WhatsApp buchen",
+            help: "Brauchen Sie Hilfe? Chatten Sie mit uns →",
+            disclaimer: "Reservierungen sind bis zur Bestätigung per WhatsApp ausstehend."
+        }
+    };
+
+    const venueLinks = {
+        Lio: 'https://www.instagram.com/liopalmamallorca?igsh=MXN4bm9oNjQzc3czZg==',
+        BCM: 'https://www.instagram.com/bcmmallorca?igsh=MWFxZDZqZWk5MHY0dw==',
+        Amok: 'https://www.instagram.com/amokmallorca?igsh=YmIxeWJxM3Z5YWo4'
+    };
+    
+    const whatsappNumber = "+34644075065";
+
+    const el = {
+        langSwitch: document.getElementById('lang-switch'),
+        intro: document.getElementById('intro-text'),
+        form: document.getElementById('booking-form'),
+        serviceSelect: document.getElementById('service'),
+        boatPriceField: document.getElementById('boat-price-field'),
+        boatPriceSelect: document.getElementById('boat-price'),
+        venueField: document.getElementById('venue-field'),
+        venueSelect: document.getElementById('venue'),
+        venueLinks: document.getElementById('venue-links'),
+        dateInput: document.getElementById('date'),
+        submitBtn: document.getElementById('submit-btn'),
+        help: document.getElementById('help-text'),
+        disclaimer: document.getElementById('disclaimer-text')
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'ES';
+
+    function init() {
+        // Set minimum date to today
+        el.dateInput.min = new Date().toISOString().split("T")[0];
+
+        renderLangButtons();
+        applyLanguage(currentLang);
+        
+        el.form.addEventListener('input', validateForm);
+        el.form.addEventListener('submit', onSubmit);
+        el.serviceSelect.addEventListener('change', updateConditionalFields);
+    }
+
+    function renderLangButtons() {
+        Object.keys(translations).forEach(code => {
+            const btn = document.createElement('button');
+            btn.textContent = code;
+            btn.className = 'lang-btn';
+            btn.addEventListener('click', () => setLanguage(code));
+            el.langSwitch.appendChild(btn);
+        });
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('lang', lang);
+        applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+        const t = translations[lang];
+        document.documentElement.lang = lang.toLowerCase();
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang));
+
+        el.intro.textContent = t.intro;
+        
+        // Set all labels from translation file
+        for (const key in t.labels) {
+            const labelEl = document.getElementById(`label-${key}`);
+            if(labelEl) labelEl.textContent = t.labels[key];
+        }
+
+        populateSelect(el.serviceSelect, t.placeholders.service, t.services);
+        populateSelect(el.boatPriceSelect, t.placeholders.boatPrice, t.boatPrices);
+        populateSelect(el.venueSelect, t.placeholders.venue, t.venues);
+
+        // Populate venue links
+        el.venueLinks.innerHTML = `<strong>${t.venueLinks}</strong> <a href="${venueLinks.BCM}" target="_blank">BCM</a> <a href="${venueLinks.Lio}" target="_blank">Lio</a> <a href="${venueLinks.Amok}" target="_blank">Amok</a>`;
+
+        el.submitBtn.textContent = t.submit;
+        el.help.innerHTML = `<a href="https://wa.me/${whatsappNumber}">${t.help}</a>`;
+        el.disclaimer.textContent = t.disclaimer;
+
+        updateConditionalFields();
+        validateForm();
+    }
+
+    function populateSelect(selectEl, placeholder, options) {
+        selectEl.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+        for (const key in options) {
+            const option = document.createElement('option');
+            option.value = key; // Use key as value (e.g., 'range1', 'Boat Rental')
+            option.textContent = options[key]; // Use value as text (e.g., '€400 - €900...', 'Alquiler de Barco')
+            selectEl.appendChild(option);
+        }
+    }
+
+    function updateConditionalFields() {
+        const selectedService = el.serviceSelect.value;
+        
+        const showBoatPrices = selectedService === 'Boat Rental';
+        const showVenues = selectedService === 'VIP Table';
+
+        el.boatPriceField.classList.toggle('hidden', !showBoatPrices);
+        el.boatPriceSelect.required = showBoatPrices;
+        
+        el.venueField.classList.toggle('hidden', !showVenues);
+        el.venueSelect.required = showVenues;
+
+        if (!showBoatPrices) el.boatPriceSelect.value = '';
+        if (!showVenues) el.venueSelect.value = '';
+        
+        validateForm();
+    }
+    
+    function validateForm() {
+        el.submitBtn.disabled = !el.form.checkValidity();
+    }
+
+    function onSubmit(e) {
+        e.preventDefault();
+        if (!el.form.checkValidity()) return;
+
+        const serviceText = el.serviceSelect.options[el.serviceSelect.selectedIndex].text;
+        let detailsText = "";
+
+        if (el.serviceSelect.value === 'Boat Rental') {
+            detailsText = `\n- *Rango de Precio:* ${el.boatPriceSelect.options[el.boatPriceSelect.selectedIndex].text}`;
+        } else if (el.serviceSelect.value === 'VIP Table') {
+            detailsText = `\n- *Discoteca:* ${el.venueSelect.options[el.venueSelect.selectedIndex].text}`;
+        }
+        
+        const participants = document.getElementById('participants').value;
+        const phone = document.getElementById('phone').value;
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const notes = document.getElementById('notes').value || '-';
+
+        const message = `*Nueva Reserva VIP*\n\n- *Servicio:* ${serviceText}${detailsText}\n- *Fecha:* ${date}\n- *Hora:* ${time}\n- *Personas:* ${participants}\n- *Teléfono:* ${phone}\n- *Notas:* ${notes}`;
+
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
